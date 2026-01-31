@@ -70,7 +70,7 @@ export const SkillsPanel: Component = () => {
       </div>
 
       <div class="flex-1 min-h-0 overflow-y-auto p-3">
-        <div class="grid grid-cols-1 gap-2 @[240px]:grid-cols-2">
+        <div class="flex flex-col gap-2">
           <For each={skills()}>{(skill) => <SkillCard skill={skill} onSelect={handleSelect} />}</For>
         </div>
       </div>

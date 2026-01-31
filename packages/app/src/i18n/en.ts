@@ -22,6 +22,7 @@ export const dict = {
   "theme.scheme.dark": "Dark",
 
   "command.sidebar.toggle": "Toggle sidebar",
+  "command.skills.toggle": "Toggle skills panel",
   "command.project.open": "Open project",
   "command.provider.connect": "Connect provider",
   "command.server.switch": "Switch server",
@@ -509,6 +510,7 @@ export const dict = {
   "sidebar.menu.toggle": "Toggle menu",
   "sidebar.nav.projectsAndSessions": "Projects and sessions",
   "sidebar.settings": "Settings",
+  "sidebar.skills": "Skills",
   "sidebar.help": "Help",
   "sidebar.workspaces.enable": "Enable workspaces",
   "sidebar.workspaces.disable": "Disable workspaces",
@@ -731,4 +733,9 @@ export const dict = {
   "workspace.reset.archived.one": "1 session will be archived.",
   "workspace.reset.archived.many": "{{count}} sessions will be archived.",
   "workspace.reset.note": "This will reset the workspace to match the default branch.",
+
+  "skills.category.coding": "Coding",
+  "skills.category.prompt": "Prompt Tools",
+  "skills.category.project": "Project",
+  "skills.category.custom": "Custom",
 }

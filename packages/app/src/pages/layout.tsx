@@ -71,6 +71,7 @@ import { navStart } from "@/utils/perf"
 import { DialogSelectDirectory } from "@/components/dialog-select-directory"
 import { DialogEditProject } from "@/components/dialog-edit-project"
 import { Titlebar } from "@/components/titlebar"
+import { SkillsPanel } from "@/components/skills-panel"
 import { useServer } from "@/context/server"
 import { useLanguage, type Locale } from "@/context/language"
 
@@ -983,6 +984,13 @@ export default function Layout(props: ParentProps) {
         category: language.t("command.category.view"),
         keybind: "mod+b",
         onSelect: () => layout.sidebar.toggle(),
+      },
+      {
+        id: "skills.toggle",
+        title: language.t("command.skills.toggle"),
+        category: language.t("command.category.view"),
+        keybind: "mod+shift+k",
+        onSelect: () => layout.skills.toggle(),
       },
       {
         id: "project.open",
@@ -2788,6 +2796,22 @@ export default function Layout(props: ParentProps) {
           <div class="shrink-0 w-full pt-3 pb-3 flex flex-col items-center gap-2">
             <TooltipKeybind
               placement={sidebarProps.mobile ? "bottom" : "right"}
+              title={language.t("sidebar.skills")}
+              keybind={command.keybind("skills.toggle")}
+            >
+              <IconButton
+                icon="brain"
+                variant="ghost"
+                size="large"
+                onClick={() => layout.skills.toggle()}
+                aria-label={language.t("sidebar.skills")}
+                classList={{
+                  "text-text-strong bg-surface-base": layout.skills.opened(),
+                }}
+              />
+            </TooltipKeybind>
+            <TooltipKeybind
+              placement={sidebarProps.mobile ? "bottom" : "right"}
               title={language.t("sidebar.settings")}
               keybind={command.keybind("settings.open")}
             >
@@ -2812,7 +2836,20 @@ export default function Layout(props: ParentProps) {
         </div>
 
         <Show when={expanded()}>
-          <SidebarPanel project={currentProject()} mobile={sidebarProps.mobile} />
+          <Show
+            when={layout.skills.opened()}
+            fallback={<SidebarPanel project={currentProject()} mobile={sidebarProps.mobile} />}
+          >
+            <div
+              classList={{
+                "flex flex-col min-h-0 bg-background-stronger border border-b-0 border-border-weak-base rounded-tl-sm": true,
+                "flex-1 min-w-0": sidebarProps.mobile,
+              }}
+              style={{ width: sidebarProps.mobile ? undefined : `${Math.max(layout.sidebar.width() - 64, 0)}px` }}
+            >
+              <SkillsPanel />
+            </div>
+          </Show>
         </Show>
       </div>
     )

@@ -58,6 +58,7 @@ import { createOpencodeClient, type Message, type Part } from "@opencode-ai/sdk/
 import { Binary } from "@opencode-ai/util/binary"
 import { showToast } from "@opencode-ai/ui/toast"
 import { base64Encode } from "@opencode-ai/util/encode"
+import { skillEmitter } from "./skills-panel"
 
 const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"]
 const ACCEPTED_FILE_TYPES = [...ACCEPTED_IMAGE_TYPES, "application/pdf"]
@@ -428,6 +429,17 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     document.removeEventListener("dragleave", handleGlobalDragLeave)
     document.removeEventListener("drop", handleGlobalDrop)
   })
+
+  const skillUnsub = skillEmitter.on("inject", (text) => {
+    editorRef.innerHTML = ""
+    editorRef.textContent = text
+    prompt.set([{ type: "text", content: text, start: 0, end: text.length }], text.length)
+    requestAnimationFrame(() => {
+      editorRef.focus()
+      setCursorPosition(editorRef, text.length)
+    })
+  })
+  onCleanup(skillUnsub)
 
   createEffect(() => {
     if (!isFocused()) setStore("popover", null)

@@ -113,6 +113,10 @@ export const { use: useLayout, provider: LayoutProvider } = createSimpleContext(
         mobileSidebar: {
           opened: false,
         },
+        skills: {
+          opened: false,
+          tab: "coding" as "coding" | "prompt" | "project" | "custom",
+        },
         sessionTabs: {} as Record<string, SessionTabs>,
         sessionView: {} as Record<string, SessionView>,
       }),
@@ -534,6 +538,41 @@ export const { use: useLayout, provider: LayoutProvider } = createSimpleContext(
         },
         toggle() {
           setStore("mobileSidebar", "opened", (x) => !x)
+        },
+      },
+      skills: {
+        opened: createMemo(() => store.skills?.opened ?? false),
+        tab: createMemo(() => store.skills?.tab ?? "coding"),
+        setTab(tab: "coding" | "prompt" | "project" | "custom") {
+          if (!store.skills) {
+            setStore("skills", { opened: true, tab })
+            return
+          }
+          setStore("skills", "tab", tab)
+        },
+        open() {
+          setStore("sidebar", "opened", true)
+          if (!store.skills) {
+            setStore("skills", { opened: true, tab: "coding" })
+            return
+          }
+          setStore("skills", "opened", true)
+        },
+        close() {
+          if (!store.skills) {
+            setStore("skills", { opened: false, tab: "coding" })
+            return
+          }
+          setStore("skills", "opened", false)
+        },
+        toggle() {
+          const willOpen = !(store.skills?.opened ?? false)
+          if (willOpen) setStore("sidebar", "opened", true)
+          if (!store.skills) {
+            setStore("skills", { opened: true, tab: "coding" })
+            return
+          }
+          setStore("skills", "opened", willOpen)
         },
       },
       view(sessionKey: string | Accessor<string>) {

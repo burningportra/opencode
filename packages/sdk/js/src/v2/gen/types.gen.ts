@@ -4914,6 +4914,7 @@ export type AppSkillsResponses = {
     description: string
     location: string
     content: string
+    category?: "coding" | "devops" | "writing" | "research" | "other"
   }>
 }
 

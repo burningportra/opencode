@@ -14,13 +14,46 @@ import { Session } from "@/session"
 
 export namespace Skill {
   const log = Log.create({ service: "skill" })
+
+  export const Category = z.enum(["coding", "devops", "writing", "research", "other"]).default("other")
+  export type Category = z.infer<typeof Category>
+
   export const Info = z.object({
     name: z.string(),
     description: z.string(),
     location: z.string(),
     content: z.string(),
+    category: Category,
   })
   export type Info = z.infer<typeof Info>
+
+  function classify(name: string, description: string): Category {
+    const text = `${name} ${description}`.toLowerCase()
+
+    const patterns: [Category, RegExp][] = [
+      [
+        "devops",
+        /\b(deploy|deployment|devops|ci\/cd|ci|cd|docker|kubernetes|k8s|terraform|aws|gcp|azure|cloud|infra|infrastructure|pipeline|monitor|monitoring|log|logs|server|service|services|database|redis|postgres|mysql|nginx|helm|ansible|jenkins|github.actions|railway|hosting|uptime|domain|replica|scale|variable|env|config|configuration|template|status)\b/,
+      ],
+      [
+        "coding",
+        /\b(code|coding|debug|test|refactor|lint|format|typescript|javascript|python|rust|go|java|bug|fix|implement|develop|program|compile|syntax|api|sdk|library|framework|component|function|class|module|frontend|backend|fullstack|react|next\.js|vue|angular|bun|node|file|read|write|scan)\b/,
+      ],
+      [
+        "writing",
+        /\b(write|writing|document|documentation|readme|blog|article|content|copy|proofread|grammar|markdown|prose|technical.writing|changelog|release.notes|docs)\b/,
+      ],
+      [
+        "research",
+        /\b(research|analyze|analysis|explore|investigate|audit|review|security|performance|benchmark|profile|optimize|architecture|design|plan|strategy|evaluate|assess|compare|crawl|scrape|search|web|browse|fetch|guidelines|best.practices|tech.debt)\b/,
+      ],
+    ]
+
+    for (const [cat, pattern] of patterns) {
+      if (pattern.test(text)) return cat
+    }
+    return "other"
+  }
 
   export const InvalidError = NamedError.create(
     "SkillInvalidError",
@@ -71,11 +104,18 @@ export namespace Skill {
         })
       }
 
+      const raw = md.data.category
+      const category =
+        typeof raw === "string" && Category.removeDefault().safeParse(raw).success
+          ? (raw as Category)
+          : classify(parsed.data.name, parsed.data.description)
+
       skills[parsed.data.name] = {
         name: parsed.data.name,
         description: parsed.data.description,
         location: match,
         content: md.content,
+        category,
       }
     }
 

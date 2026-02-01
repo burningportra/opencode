@@ -1,4 +1,4 @@
-import { Component, createMemo, createResource, For, Show } from "solid-js"
+import { Component, createMemo, createResource, createSignal, For, Show } from "solid-js"
 import { createGlobalEmitter } from "@solid-primitives/event-bus"
 import { useLayout } from "@/context/layout"
 import { useLanguage } from "@/context/language"
@@ -29,10 +29,10 @@ export const SkillsPanel: Component = () => {
     }))
   })
 
-  const handleSelect = (skill: { content: string }) => {
-    if (skill.content) {
-      skillEmitter.emit("inject", skill.content)
-    }
+  const [expanded, setExpanded] = createSignal<string | null>(null)
+
+  const handleAction = (prompt: string) => {
+    skillEmitter.emit("inject", prompt)
   }
 
   return (
@@ -76,7 +76,16 @@ export const SkillsPanel: Component = () => {
                     <span class="text-11-regular text-text-muted">({group.skills.length})</span>
                   </div>
                   <div class="flex flex-col gap-1.5">
-                    <For each={group.skills}>{(skill) => <SkillCard skill={skill} onSelect={handleSelect} />}</For>
+                    <For each={group.skills}>
+                      {(skill) => (
+                        <SkillCard
+                          skill={skill}
+                          expanded={expanded() === skill.name}
+                          onToggle={() => setExpanded((prev) => (prev === skill.name ? null : skill.name))}
+                          onAction={handleAction}
+                        />
+                      )}
+                    </For>
                   </div>
                 </div>
               )}

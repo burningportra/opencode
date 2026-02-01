@@ -30,6 +30,157 @@ export const categoryColors: Record<SkillCategory, string> = {
   other: "bg-gray-500/10 text-gray-400 border-gray-500/20",
 }
 
+export type SkillAction = {
+  label: string
+  prompt: string
+}
+
+export const skillActions: Record<string, SkillAction[]> = {
+  "git-master": [
+    { label: "Commit changes", prompt: "Commit my current changes with a descriptive message" },
+    { label: "Squash commits", prompt: "Squash the last few commits into one clean commit" },
+    { label: "Find who wrote", prompt: "Find who wrote the code around the current cursor position" },
+    { label: "Rebase onto dev", prompt: "Rebase my current branch onto the dev branch" },
+  ],
+  deploy: [
+    { label: "Deploy project", prompt: "Deploy the current project to Railway" },
+    { label: "Check status", prompt: "Check the deployment status of my Railway services" },
+  ],
+  database: [
+    { label: "Add Postgres", prompt: "Add a Postgres database to my Railway project" },
+    { label: "Add Redis", prompt: "Add a Redis instance to my Railway project" },
+    { label: "Connect DB", prompt: "Connect to my existing database and show the connection details" },
+  ],
+  playwright: [
+    { label: "Screenshot URL", prompt: "Take a screenshot of the current page at localhost:3000" },
+    { label: "Test login flow", prompt: "Test the login flow on my web application" },
+    { label: "Check accessibility", prompt: "Run an accessibility check on the current page" },
+  ],
+  "dev-browser": [
+    { label: "Open page", prompt: "Open http://localhost:3000 in the browser" },
+    { label: "Fill a form", prompt: "Navigate to the page with a form and fill it out" },
+    { label: "Scrape page", prompt: "Scrape the content from the current page" },
+  ],
+  firecrawl: [
+    { label: "Search the web", prompt: "Search the web for information about " },
+    { label: "Read a URL", prompt: "Read and summarize the content at " },
+    { label: "Deep research", prompt: "Do deep research on " },
+  ],
+  "tech-debt-agent": [
+    { label: "Audit codebase", prompt: "Analyze the codebase for tech debt and create a remediation plan" },
+    { label: "Find issues", prompt: "Find the most critical tech debt issues in this project" },
+  ],
+  "frontend-design": [
+    { label: "Build component", prompt: "Build a polished UI component for " },
+    { label: "Redesign page", prompt: "Redesign the current page with modern, distinctive styling" },
+  ],
+  environment: [
+    { label: "Show config", prompt: "Show the current environment configuration for my Railway service" },
+    { label: "Set variable", prompt: "Set an environment variable on my Railway service" },
+    { label: "Scale replicas", prompt: "Scale the number of replicas for my Railway service" },
+  ],
+  deployment: [
+    { label: "View logs", prompt: "Show the latest deployment logs for my Railway service" },
+    { label: "Restart service", prompt: "Restart my Railway service deployment" },
+    { label: "Rollback", prompt: "Rollback to the previous deployment" },
+  ],
+  status: [{ label: "Service health", prompt: "Check the health and status of all my Railway services" }],
+  metrics: [{ label: "Resource usage", prompt: "Show CPU, memory, and disk usage for my Railway services" }],
+  domain: [
+    { label: "Add domain", prompt: "Add a custom domain to my Railway service" },
+    { label: "Generate URL", prompt: "Generate a Railway domain for my service" },
+  ],
+  new: [
+    { label: "Create project", prompt: "Create a new Railway project from this repository" },
+    { label: "Add service", prompt: "Add a new service to my existing Railway project" },
+  ],
+  projects: [
+    { label: "List projects", prompt: "List all my Railway projects and their status" },
+    { label: "Switch project", prompt: "Switch to a different Railway project" },
+  ],
+  templates: [
+    { label: "Browse templates", prompt: "Show available Railway templates for common services" },
+    { label: "Deploy template", prompt: "Deploy a service from a Railway template" },
+  ],
+  railway: [
+    { label: "Dashboard", prompt: "Show my Railway project dashboard with services and status" },
+    { label: "View logs", prompt: "Show recent logs from my Railway deployment" },
+  ],
+  "railway-docs": [{ label: "How to...", prompt: "How do I configure " }],
+  service: [
+    { label: "Rename service", prompt: "Rename my Railway service" },
+    { label: "Link services", prompt: "Link two Railway services together" },
+  ],
+  "web-design-guidelines": [
+    { label: "Audit UI", prompt: "Review my UI code for Web Interface Guidelines compliance" },
+    { label: "Check a11y", prompt: "Check my interface for accessibility issues" },
+  ],
+  "vercel-react-best-practices": [
+    { label: "Optimize perf", prompt: "Review my React components for performance optimization opportunities" },
+    { label: "Check bundles", prompt: "Analyze bundle size and suggest code splitting improvements" },
+  ],
+  "claude-md-improver": [{ label: "Audit CLAUDE.md", prompt: "Audit and improve the CLAUDE.md files in this project" }],
+  "claude-automation-recommender": [
+    { label: "Suggest automations", prompt: "Analyze this codebase and recommend Claude Code automations" },
+  ],
+  "stripe-best-practices": [
+    { label: "Setup payments", prompt: "Set up Stripe payment processing following best practices" },
+    { label: "Add webhooks", prompt: "Implement Stripe webhook handling with proper verification" },
+  ],
+  "bun-file-io": [
+    { label: "Read files", prompt: "Show how to read files using Bun.file() in this project" },
+    { label: "Scan directory", prompt: "Scan a directory for files matching a pattern using Bun.Glob" },
+  ],
+  rclone: [
+    { label: "Upload to S3", prompt: "Upload files to S3-compatible storage using rclone" },
+    { label: "Sync to cloud", prompt: "Sync local files to cloud storage" },
+  ],
+  "git-worktree": [
+    { label: "Create worktree", prompt: "Create a new Git worktree for parallel development" },
+    { label: "List worktrees", prompt: "List all active Git worktrees" },
+  ],
+  "gemini-imagegen": [
+    { label: "Generate image", prompt: "Generate an image from this description: " },
+    { label: "Edit image", prompt: "Edit an existing image with these changes: " },
+  ],
+  "central-station": [{ label: "Search threads", prompt: "Search Railway Central Station for threads about " }],
+  "find-skills": [{ label: "Discover skills", prompt: "Find available skills that can help with " }],
+  "skill-creator": [{ label: "Create skill", prompt: "Help me create a new SKILL.md file for " }],
+  "create-agent-skills": [{ label: "Write skill", prompt: "Guide me through writing a new Claude Code skill" }],
+  "compound-docs": [{ label: "Save solution", prompt: "Capture this solved problem as categorized documentation" }],
+  playground: [{ label: "Build explorer", prompt: "Create an interactive HTML playground for " }],
+  "hook-development": [{ label: "Create hook", prompt: "Create a new hook for Claude Code plugin automation" }],
+  "command-development": [{ label: "Build command", prompt: "Create a new slash command for my Claude Code plugin" }],
+  "plugin-structure": [
+    { label: "Scaffold plugin", prompt: "Scaffold a new Claude Code plugin with proper directory structure" },
+  ],
+  "mcp-integration": [{ label: "Add MCP server", prompt: "Integrate an MCP server into my Claude Code plugin" }],
+  "agent-development": [{ label: "Create agent", prompt: "Create a new agent for my Claude Code plugin" }],
+  "skill-development": [{ label: "Improve skill", prompt: "Review and improve this SKILL.md file" }],
+  "agent-browser": [
+    { label: "Open page", prompt: "Open a webpage and take a snapshot of interactive elements" },
+    { label: "Fill form", prompt: "Navigate to a form and fill it out automatically" },
+  ],
+  "dhh-rails-style": [{ label: "Review style", prompt: "Review this Rails code for DHH/37signals style compliance" }],
+  "andrew-kane-gem-writer": [{ label: "Create gem", prompt: "Create a new Ruby gem following Andrew Kane's patterns" }],
+  "dspy-ruby": [{ label: "Build module", prompt: "Create a new DSPy.rb module with type-safe signatures" }],
+  "file-todos": [
+    { label: "Show todos", prompt: "Show all open file-based todos and their status" },
+    { label: "Triage todos", prompt: "Help me triage and prioritize open todos" },
+  ],
+  "every-style-editor": [{ label: "Review copy", prompt: "Review this text for Every style guide compliance" }],
+  "writing-rules": [{ label: "Create rule", prompt: "Create a new hookify rule for automated code review" }],
+  "plugin-settings": [{ label: "Add settings", prompt: "Add configurable settings to my Claude Code plugin" }],
+  "agent-native-architecture": [
+    { label: "Design agents", prompt: "Design an agent-native architecture for this application" },
+  ],
+  "example-skill": [{ label: "View template", prompt: "Show the reference template for creating a SKILL.md skill" }],
+}
+
+export function getActions(skill: Skill): SkillAction[] {
+  return skillActions[skill.name] ?? [{ label: `Ask about ${skill.name}`, prompt: `Help me with ${skill.name}` }]
+}
+
 export const skillDescriptions: Record<string, string> = {
   "agent-browser": "Automate browser interactions, form filling, and page scraping via CLI commands",
   "agent-native-architecture": "Design autonomous agent systems with MCP tools and self-modifying loops",

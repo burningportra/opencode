@@ -1,45 +1,37 @@
-import { Component, createMemo, For } from "solid-js"
+import { Component, createMemo, createResource, For, Show } from "solid-js"
 import { createGlobalEmitter } from "@solid-primitives/event-bus"
 import { useLayout } from "@/context/layout"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
 import { useLanguage } from "@/context/language"
-import { getSkillsByCategory, type Skill, type SkillCategory } from "@/utils/skills"
+import { useGlobalSDK } from "@/context/global-sdk"
+import { CATEGORIES, groupByCategory, categoryLabels, categoryIcons, type SkillCategory } from "@/utils/skills"
 import { SkillCard } from "./skill-card"
-import { SkillForm } from "./skill-form"
-
-const tabs: SkillCategory[] = ["coding", "prompt", "project", "custom"]
+import { Icon } from "@opencode-ai/ui/icon"
 
 export const skillEmitter = createGlobalEmitter<{ inject: string }>()
 
 export const SkillsPanel: Component = () => {
   const layout = useLayout()
-  const dialog = useDialog()
   const language = useLanguage()
+  const sdk = useGlobalSDK()
 
-  const grouped = createMemo(() => getSkillsByCategory())
-  const skills = createMemo(() => grouped()[layout.skills.tab()])
+  const [skills] = createResource(async () => {
+    const response = await sdk.client.app.skills()
+    return response.data ?? []
+  })
 
-  const injectPrompt = (text: string) => {
-    skillEmitter.emit("inject", text)
-  }
+  const grouped = createMemo(() => {
+    const groups = groupByCategory(skills() ?? [])
+    return CATEGORIES.filter((cat) => groups[cat].length > 0).map((cat) => ({
+      category: cat,
+      label: categoryLabels[cat],
+      icon: categoryIcons[cat],
+      skills: groups[cat],
+    }))
+  })
 
-  const handleSelect = (skill: Skill) => {
-    if (skill.type === "form") {
-      dialog.show(() => (
-        <SkillForm
-          skill={skill}
-          onSubmit={(text) => {
-            dialog.close()
-            injectPrompt(text)
-          }}
-          onCancel={() => dialog.close()}
-        />
-      ))
-      return
-    }
-
-    if (skill.prompt) {
-      injectPrompt(skill.prompt)
+  const handleSelect = (skill: { content: string }) => {
+    if (skill.content) {
+      skillEmitter.emit("inject", skill.content)
     }
   }
 
@@ -49,30 +41,48 @@ export const SkillsPanel: Component = () => {
         <h2 class="text-14-medium text-text-strong">{language.t("sidebar.skills")}</h2>
       </div>
 
-      <div class="shrink-0 flex gap-1 border-b border-border-base p-2">
-        <For each={tabs}>
-          {(tab) => (
-            <button
-              type="button"
-              data-component="skill-category-tab"
-              data-category={tab}
-              onClick={() => layout.skills.setTab(tab)}
-              class="flex-1 rounded-md px-2 py-1.5 text-12-medium transition-colors"
-              classList={{
-                "bg-surface-raised text-text-strong": layout.skills.tab() === tab,
-                "text-text-muted hover:text-text-base hover:bg-surface-hover": layout.skills.tab() !== tab,
-              }}
-            >
-              {language.t(`skills.category.${tab}`)}
-            </button>
-          )}
-        </For>
-      </div>
-
       <div class="flex-1 min-h-0 overflow-y-auto p-3">
-        <div class="flex flex-col gap-2">
-          <For each={skills()}>{(skill) => <SkillCard skill={skill} onSelect={handleSelect} />}</For>
-        </div>
+        <Show when={skills.loading}>
+          <div class="flex flex-col gap-2">
+            <For each={[1, 2, 3]}>
+              {() => <div class="h-16 rounded-lg border border-border-base bg-surface-base animate-pulse" />}
+            </For>
+          </div>
+        </Show>
+
+        <Show when={skills.error}>
+          <div class="flex flex-col items-center justify-center gap-3 py-8 text-center">
+            <Icon name="circle-x" size="large" class="text-icon-weak-base" />
+            <p class="text-13-regular text-text-muted">Failed to load skills</p>
+          </div>
+        </Show>
+
+        <Show when={!skills.loading && !skills.error && (skills() ?? []).length === 0}>
+          <div class="flex flex-col items-center justify-center gap-3 py-8 text-center">
+            <Icon name="brain" size="large" class="text-icon-weak-base" />
+            <p class="text-13-medium text-text-muted">No skills found</p>
+            <p class="text-11-regular text-text-muted px-4">Add SKILL.md files to .opencode/skill/ to get started</p>
+          </div>
+        </Show>
+
+        <Show when={!skills.loading && !skills.error && grouped().length > 0}>
+          <div class="flex flex-col gap-4">
+            <For each={grouped()}>
+              {(group) => (
+                <div class="flex flex-col gap-1.5">
+                  <div class="flex items-center gap-1.5 px-1 py-1">
+                    <Icon name={group.icon} size="small" class="text-icon-weak-base" />
+                    <span class="text-11-medium text-text-muted uppercase tracking-wider">{group.label}</span>
+                    <span class="text-11-regular text-text-muted">({group.skills.length})</span>
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <For each={group.skills}>{(skill) => <SkillCard skill={skill} onSelect={handleSelect} />}</For>
+                  </div>
+                </div>
+              )}
+            </For>
+          </div>
+        </Show>
       </div>
     </div>
   )

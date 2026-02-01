@@ -736,7 +736,8 @@ export const dict = {
   "workspace.reset.note": "This will reset the workspace to match the default branch.",
 
   "skills.category.coding": "Coding",
-  "skills.category.prompt": "Prompt Tools",
-  "skills.category.project": "Project",
-  "skills.category.custom": "Custom",
+  "skills.category.devops": "DevOps",
+  "skills.category.writing": "Writing",
+  "skills.category.research": "Research",
+  "skills.category.other": "Other",
 }

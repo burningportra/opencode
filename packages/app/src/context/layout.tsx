@@ -77,11 +77,21 @@ export const { use: useLayout, provider: LayoutProvider } = createSimpleContext(
         }
       })()
 
-      if (migratedSidebar === sidebar && migratedFileTree === fileTree) return value
+      const skills = value.skills
+      const migratedSkills = (() => {
+        if (!isRecord(skills)) return skills
+        const tab = skills.tab
+        if (tab === "prompt" || tab === "custom") return { ...skills, tab: "other" }
+        if (tab === "project") return { ...skills, tab: "research" }
+        return skills
+      })()
+
+      if (migratedSidebar === sidebar && migratedFileTree === fileTree && migratedSkills === skills) return value
       return {
         ...value,
         sidebar: migratedSidebar,
         fileTree: migratedFileTree,
+        skills: migratedSkills,
       }
     }
 
@@ -115,7 +125,7 @@ export const { use: useLayout, provider: LayoutProvider } = createSimpleContext(
         },
         skills: {
           opened: false,
-          tab: "coding" as "coding" | "prompt" | "project" | "custom",
+          tab: "coding" as "coding" | "devops" | "writing" | "research" | "other",
         },
         sessionTabs: {} as Record<string, SessionTabs>,
         sessionView: {} as Record<string, SessionView>,
@@ -543,7 +553,7 @@ export const { use: useLayout, provider: LayoutProvider } = createSimpleContext(
       skills: {
         opened: createMemo(() => store.skills?.opened ?? false),
         tab: createMemo(() => store.skills?.tab ?? "coding"),
-        setTab(tab: "coding" | "prompt" | "project" | "custom") {
+        setTab(tab: "coding" | "devops" | "writing" | "research" | "other") {
           if (!store.skills) {
             setStore("skills", { opened: true, tab })
             return

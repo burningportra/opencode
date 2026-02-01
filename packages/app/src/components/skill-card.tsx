@@ -1,6 +1,6 @@
 import { Component } from "solid-js"
 import { Icon } from "@opencode-ai/ui/icon"
-import { categoryIcons, type Skill, type SkillCategory } from "@/utils/skills"
+import { categoryIcons, getDescription, type Skill, type SkillCategory } from "@/utils/skills"
 
 export const SkillCard: Component<{
   skill: Skill
@@ -23,7 +23,7 @@ export const SkillCard: Component<{
         <span class="text-13-medium text-text-base transition-colors duration-200 group-hover:text-text-strong">
           {props.skill.name}
         </span>
-        <span class="truncate text-11-regular text-text-muted">{props.skill.description}</span>
+        <span class="truncate text-11-regular text-text-muted">{getDescription(props.skill)}</span>
       </div>
       <div class="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-200 group-hover:opacity-100 bg-gradient-to-br from-white/[0.02] to-transparent" />
     </button>
